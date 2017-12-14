@@ -21,7 +21,7 @@ AppModule = __decorate([
         imports: [platform_browser_1.BrowserModule, ej2_ng_grids_1.GridModule, ej2_ng_buttons_1.ButtonModule],
         declarations: [app_component_1.AppComponent],
         bootstrap: [app_component_1.AppComponent],
-        providers: [ej2_ng_grids_1.PageService, ej2_ng_grids_1.SelectionService, ej2_ng_grids_1.SortService]
+        providers: [ej2_ng_grids_1.PageService, ej2_ng_grids_1.SelectionService, ej2_ng_grids_1.SortService, ej2_ng_grids_1.EditService, ej2_ng_grids_1.ToolbarService]
     })
 ], AppModule);
 exports.AppModule = AppModule;

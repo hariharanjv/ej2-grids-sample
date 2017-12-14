@@ -10,15 +10,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var data_1 = require("./data");
 var ej2_grids_1 = require("@syncfusion/ej2-grids");
 var ej2_ng_grids_1 = require("@syncfusion/ej2-ng-grids");
 var AppComponent = (function () {
     function AppComponent() {
     }
+    AppComponent.prototype.onChange = function () {
+        var valElement1 = this.tr.querySelector('#' + this.grid.columns[1].field);
+        var valElement2 = this.tr.querySelector('#' + this.grid.columns[2].field);
+        var amountElement = this.tr.querySelector('#' + this.grid.columns[3].field);
+        //value1 and value 2 sum stored on amount 
+        amountElement.value = ((valElement1.value === '' ? 0 : parseInt(valElement1.value, 10)) + (valElement2.value === '' ? 0 : parseInt(valElement2.value, 10))).toString();
+    };
+    AppComponent.prototype.setEditRow = function () {
+        this.tr = this.grid.element.querySelector('.e-editedrow');
+        if (!this.tr) {
+            this.tr = this.grid.element.querySelector('.e-addedrow');
+        }
+    };
+    AppComponent.prototype.actionBegin = function (args) {
+        this.setEditRow();
+        if (args.requestType === 'save') {
+            this.tr.removeEventListener('keyup', this.eventListerner);
+        }
+    };
+    AppComponent.prototype.actionComplete = function (args) {
+        this.setEditRow();
+        if (args.requestType === 'beginEdit' || args.requestType === 'add') {
+            this.tr.addEventListener('keyup', this.eventListerner);
+        }
+    };
     AppComponent.prototype.ngOnInit = function () {
-        this.data = data_1.gridData;
-        this.pageSettings = { pageCount: 5 };
+        this.eventListerner = this.onChange.bind(this);
+        this.data = [{ id: 1, val1: 1, val2: 3, amt: 4, defaultValue: 'default' }, { id: 2, val1: 4, val2: 3, amt: 7, defaultValue: 'default' }],
+            this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true };
+        this.toolbar = ['add', 'edit', 'delete', 'update', 'cancel'];
     };
     return AppComponent;
 }());
@@ -29,8 +55,8 @@ __decorate([
 AppComponent = __decorate([
     core_1.Component({
         selector: 'my-app',
-        template: "\n    <ej-grid #grid [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings'>\n        <e-columns>\n            <e-column field ='Country' headerText='Country' width='150'>\n                <ng-template #template let-data>\n                    <a href=\"#\">{{data.Country}}</a>\n                </ng-template>\n            </e-column>\n            <e-column field='EmployeeID' headerText='Employee ID' width='125' textAling='right'></e-column>\n            <e-column field='FirstName' headerText='Name' width='120'></e-column>\n            <e-column field='Title' headerText='Title' width='170'></e-column>      \n        </e-columns>\n    </ej-grid>",
-        providers: [ej2_ng_grids_1.PageService]
+        template: "\n    <ej-grid [dataSource]='data' #grid allowPaging='true' (actionBegin)=\"actionBegin($event)\" (actionComplete)=\"actionComplete($event)\" [editSettings]='editSettings' [toolbar]='toolbar'>\n    <e-columns>\n        <e-column field='id' headerText='ID' width='120' textAlign=\"right\" isPrimaryKey='true'></e-column>\n        <e-column field='val1' headerText='Value1' textAlign=\"right\" width='120'></e-column>\n        <e-column field='val2' headerText='Value2' width='120' textAlign=\"right\"></e-column>\n        <e-column field='amt' headerText='Amount' textAlign=\"right\" width='170'></e-column>\n        <e-column field='defaultValue' headerText='Default value' width='150' defaultValue='default value changed'></e-column>\n    </e-columns>\n    </ej-grid>",
+        providers: [ej2_ng_grids_1.PageService, ej2_ng_grids_1.EditService, ej2_ng_grids_1.ToolbarService]
     })
 ], AppComponent);
 exports.AppComponent = AppComponent;
