@@ -1,36 +1,32 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { gridData } from './data';
-import { Grid } from '@syncfusion/ej2-grids';
-import { PageService } from '@syncfusion/ej2-ng-grids';
+import { Component, OnInit } from '@angular/core';
+import { data } from './data';
+import { EditSettingsModel, ToolbarItems } from '@syncfusion/ej2-ng-grids';
 
 @Component({
-    selector: 'my-app',
-    template: `
-    <ej-grid #grid [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings'>
-        <e-columns>
-            <e-column field ='Country' headerText='Country' width='150'>
-                <ng-template #template let-data>
-                    <a href="#">{{data.Country}}</a>
-                </ng-template>
-            </e-column>
-            <e-column field='EmployeeID' headerText='Employee ID' width='125' textAling='right'></e-column>
-            <e-column field='FirstName' headerText='Name' width='120'></e-column>
-            <e-column field='Title' headerText='Title' width='170'></e-column>      
-        </e-columns>
-    </ej-grid>`,
-    providers: [PageService]
+    selector: 'app-container',
+    template: `<ej-grid [dataSource]='data' [editSettings]='editSettings' (actionComplete)='beginEdit($event)' [toolbar]='toolbar' height='273px'>
+                <e-columns>
+                    <e-column field='OrderID' headerText='Order ID' textAlign='right' isPrimaryKey='true' width=100></e-column>
+                    <e-column field='CustomerID' headerText='Customer ID' width=120></e-column>
+                   <e-column field='EmployeeID' displayAsCheckBox='true' type='boolean' editType='booleanedit' width= 50></e-column>
+                </e-columns>
+                </ej-grid>`
 })
-
 export class AppComponent implements OnInit {
 
-    @ViewChild('grid')
-    public grid: Grid;
     public data: Object[];
-    public pageSettings: Object;
-    public columns;
+    public editSettings: EditSettingsModel;
+    public toolbar: ToolbarItems[];
 
-    public ngOnInit(): void {
-        this.data = gridData;
-        this.pageSettings = { pageCount: 5 };       
-    }   
+    ngOnInit(): void {
+        this.data = data;
+        this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true };
+        this.toolbar = ['add', 'edit', 'delete', 'update', 'cancel'];
+    }
+    beginEdit(e) {
+        if (e.requestType === 'beginEdit' || e.requestType === 'add') {
+            e.row.querySelector(".e-checkbox-wrapper").classList.add("e-small");
+        }
+
+    }
 }
