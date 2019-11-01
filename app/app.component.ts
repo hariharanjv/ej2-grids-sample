@@ -1,36 +1,30 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { gridData } from './data';
-import { Grid } from '@syncfusion/ej2-grids';
-import { PageService } from '@syncfusion/ej2-ng-grids';
+import { Component, OnInit } from '@angular/core';
+import { gridData1 } from './data';
+import { ToolbarItem } from '@syncfusion/ej2-grids';
 
 @Component({
-    selector: 'my-app',
-    template: `
-    <ej-grid #grid [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings'>
-        <e-columns>
-            <e-column field ='Country' headerText='Country' width='150'>
-                <ng-template #template let-data>
-                    <a href="#">{{data.Country}}</a>
-                </ng-template>
-            </e-column>
-            <e-column field='EmployeeID' headerText='Employee ID' width='125' textAling='right'></e-column>
-            <e-column field='FirstName' headerText='Name' width='120'></e-column>
-            <e-column field='Title' headerText='Title' width='170'></e-column>      
-        </e-columns>
-    </ej-grid>`,
-    providers: [PageService]
+  selector: 'my-app',
+  template: ` <ej-grid #grid [dataSource]='data'  height='350px' [editSettings]='editSetting' [toolbar]='items'>
+                <e-columns>
+                    <e-column field='OrderID' isPrimaryKey='true' headerText='Order ID' textAlign='right' width=120></e-column>
+                    <e-column field='CustomerID' headerText='Customer ID' width=150 [validationRules]='validationRules'></e-column>
+                    <e-column field='ShipCity' headerText='Ship City' width=150></e-column>
+                    <e-column field='ShipName' headerText='Ship Name' width=150></e-column>
+                </e-columns>
+                </ej-grid>`
 })
-
 export class AppComponent implements OnInit {
 
-    @ViewChild('grid')
-    public grid: Grid;
-    public data: Object[];
-    public pageSettings: Object;
-    public columns;
+  public data: Object[];
+  public editSetting: Object;
+  public validationRules: Object;
+  public items: ToolbarItem[];
 
-    public ngOnInit(): void {
-        this.data = gridData;
-        this.pageSettings = { pageCount: 5 };       
-    }   
+
+  ngOnInit(): void {
+    this.data = gridData1;
+    this.items = [ToolbarItem.Add, ToolbarItem.Edit, ToolbarItem.Delete, ToolbarItem.Update, ToolbarItem.Cancel];
+    this.validationRules = { required: true };
+    this.editSetting = { allowEditing: true, allowDeleting: true, allowAdding: true };
+  }
 }
